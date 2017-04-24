@@ -46,8 +46,6 @@ void Ex5_FaceMorphing::buildDelaunayEx(const vector<Dot>& vecDot, vector<Triangl
     CImg<double> srcTri(src);
     CImgDisplay TSrcdisp(srcTri);
 
-    int count = 0;
-
     for (int i = 0; i < size-2; ++i) {
         for (int j = i+1; j < size-1; ++j) {
             for (int k = j+1; k < size; ++k) {
@@ -208,12 +206,12 @@ bool Ex5_FaceMorphing::readin(const string& filename, vector<Dot>& vecDot, vecto
             Dot a = (vecDot[aValue]);
             Dot b = (vecDot[bValue]);
             Dot c = (vecDot[cValue]);
-            cout << aValue << " " << bValue << " " << cValue << endl;
+            //cout << aValue << " " << bValue << " " << cValue << endl;
             vecTri.push_back(Triangle(a,b,c));
         }
     }
 
-    cout << "Dots" << endl;
+    //cout << "Dots" << endl;
 /*
     for (auto a:vecDot) {
         cout << a.x << " " << a.y << " " << a.value << endl;
@@ -317,7 +315,6 @@ void Ex5_FaceMorphing::Trans() {
     temp.display(Ttemp);
 
     for (int k = 1; k <= RATE; ++k) {
-        cout << k << endl;
         MTranstion(k);
         vector<Matrix3d*> vecSrcTar, vecTarSrc;
         for (int i = 0; i < vecTriSrc.size(); ++i) {
@@ -374,6 +371,11 @@ void Ex5_FaceMorphing::Trans() {
             if(Ttemp.button() & 1)
                 break;
         }
+        string cctemp;
+        std::stringstream sss;
+        sss << k;
+        sss >> cctemp;
+        temp.save_bmp((cctemp+".bmp").c_str());
         temp.display(Ttemp);
 
 

@@ -97,7 +97,7 @@ class Ex5_FaceMorphing {
     const int DOT_COLOR[3]{0,255,0};
     const int LINE_COLOR[3]{255,255,255};
     const double RATE = 12;
-    const double ERR = 3;
+    const double ERR = 2;
     const int DOT_RADIUS = 4;
 
     bool isThreePointOnOneLine(const Dot&, const Dot&, const Dot&);
