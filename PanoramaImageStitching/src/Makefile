@@ -1,7 +1,7 @@
 opencv:
 	$(CC) opencv_test.cc $(LDFLAGS) -std=c++11 -g -Wall -o opencv
 
-CC = clang++
+CC = g++
 CFLAGS = 
 LDFLAGS = `pkg-config --libs opencv` -lm
 #ALL = vision
