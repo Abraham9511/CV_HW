@@ -8,6 +8,8 @@
 #include "CImg.h"
 
 using std::string;
+using std::vector;
+using namespace cimg_library;
 
 class PanoramaImageStitching {
   private:
