@@ -37,4 +37,9 @@ C++
 1. [华盛顿大学的课程](http://courses.cs.washington.edu/courses/cse576/08sp/projects/project2/project2.html)
 2. A Multiresolution Spline With Application to Iamge Mosaics
 3. [机器视觉：SIFT Matching with RANSAC](http://yongyuan.name/blog/SIFT(ASIFT)-Matching-with-RANSAC.html) 重点放在匹配算法SIFT的讲解上，以及优化效果ASIFT算法
+4. [opencv实现1](http://www.voidcn.com/blog/pi9nc/article/p-4789003.html)
+5. [opencv实现2](http://blog.csdn.net/masibuaa/article/details/9246493)
+6. [用广义霍夫变换筛选sift特征点](http://www.voidcn.com/blog/u010278305/article/p-3389866.html)
+7. [sift & ransac](http://www.voidcn.com/blog/wangezhu/article/p-368877.html)
+8. 
 
