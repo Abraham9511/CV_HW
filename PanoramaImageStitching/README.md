@@ -31,6 +31,15 @@ C++
 3. 小波变换
 4. 柏松图像编辑融合
 
+### 参考Github上的一个git
+安装必要的依赖
+```
+sudo apt install build-essential sed cmake libjpeg-dev libeigen3-dev
+```
+暂时只考虑实现camera的模式，因为该模式下不需要对照片进行预排序
+
+windoows下尝试用cmake然后visual打开，但是在eigne3一步失败了
+
 
 
 ## 参考资料
@@ -41,5 +50,7 @@ C++
 5. [opencv实现2](http://blog.csdn.net/masibuaa/article/details/9246493)
 6. [用广义霍夫变换筛选sift特征点](http://www.voidcn.com/blog/u010278305/article/p-3389866.html)
 7. [sift & ransac](http://www.voidcn.com/blog/wangezhu/article/p-368877.html)
-8. 
+8. [sift实现](http://blog.csdn.net/v_JULY_v/article/details/6245939)
 
+## 参考资料
+1. [pragma package](http://www.voidcn.com/blog/lionghua/article/p-1585203.html)

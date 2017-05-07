@@ -1,10 +1,10 @@
-opencv:
-	$(CC) opencv_test.cc $(LDFLAGS) -std=c++11 -g -Wall -o opencv
+stitching:
+	$(CC) stitching.cc $(LDFLAGS) -std=c++11 -g -Wall -o stitching
 
 .PHONY: clean
 
 clean:
-	rm -rf opencv
+	rm -rf stiching
 
 CC = g++
 CFLAGS = 
