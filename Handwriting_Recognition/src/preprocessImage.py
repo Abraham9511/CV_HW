@@ -11,39 +11,41 @@ mnistSize = 28
 class mImage:
     def __init__(self, filepath, filename):
         #self.BLUR = 5;
-
         self.filepath = filepath
         self.filename = filename
         self.originPhoto = Image.open(filepath)
-        self.originPhotoArr = np.matr(self.originPhoto.getdata())
+        self.originPhotoArr = np.array(self.originPhoto)
         self.greyPhoto = self.originPhoto.convert('L')
-        self.greyPhotoArr = np.array(self.greyPhoto.getdata())
+        self.greyPhotoArr = np.array(self.greyPhoto)
         self.width = self.originPhoto.width
         self.height = self.originPhoto.height
         self.A4Width = 210
         self.A4Height = 297
 
-    def blur(self, image, BLUR = 5):
-        return image.filter(ImageFilter.GaussianBlur(BLUR))
+    def blur(self, BLUR = 5):
+        self.bImage = self.originPhoto.filter(ImageFilter.GaussianBlur(BLUR))
 
-    def edge_detection(self, imageArr, sigma = 5, low_threshold = 256*0.1, high_threshold = 256*0.2):
+    def edge_detection(self, sigma = 5, low_threshold = 256*0.1, high_threshold = 256*0.2):
+        imageArr = np.array(self.bImage)
         edgePhotoBool = feature.canny(imageArr, sigma, low_threshold, high_threshold)
         edgePhotoArr = np.uint8(edgePhotoBool)
+        """
         for i in range(self.width):
             for j in range(self.height):
                 if edgePhotoArr[i][j] == 1:
-                    edgePhotoArr[i][j] = 255
+                    edgePhotoArr[i][j] = 1
+        """
         return edgePhotoArr
 
-    def hough(self, imageArr):
+    def hough(self):
         h = dotDistance(self.width, self.height)
         w = 360
         hough = np.zeros((w, h))
-        edgePhotoArr = edge_detection(self.imageArr)
+        edgePhotoArr = edge_detection()
 
         for i in range(self.width):
             for j in range(self.height):
-                if edgePhotoArr[i][j] == 255:
+                if edgePhotoArr[i][j] == 1:
                     for ii in range(width):
                         p = int(i* cos(ii/np.pi) + j * sin(ii/np.pi))
                         if p < h and p >= 0:
@@ -51,8 +53,8 @@ class mImage:
 
         return hough
 
-    def getLineEquation(self, hough) {
-        temp = list(hough)
+    def getLineEquation(self):
+        temp = list(hough())
         w = hough.shape[0]
         h = hough.shape[1]
         size = hough.shape[0] * hough.shape[1]
@@ -76,7 +78,6 @@ class mImage:
                 k = -1/tan(theta/np.pi)
             coor = {k: k, b: b}
             foruLine.push(coor)
-            }
         return fourLine
 
     def getIntersections(self, fourLine, kthreshold):
