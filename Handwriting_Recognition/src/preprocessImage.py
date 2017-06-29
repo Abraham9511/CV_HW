@@ -6,6 +6,8 @@ from skimage import feature
 import numpy as np
 import adboost
 
+mnistSize = 28
+
 class mImage:
     def __init__(self, filepath, filename):
         #self.BLUR = 5;
@@ -188,7 +190,78 @@ class mImage:
         return result
 
     # 分割图片的数字成一个个数字
-    def cutPic():
+    def cutPicInSiglePic(self, imageArr):
+        w = imageArr.shape()[0]
+        h = imageArr.shape()[1]
+        horizontalArr = horizontalCut(imageArr)
+        
+        tempHPicArr = [] 
+        for i in range(0, len(horizontalArr)):
+            start = horizontalArr[i].start
+            end = horizontalArr[i].end
+            tempHPicArr.append(imageArr[start:end,])
+
+        singlePicArr = []
+        tempVPicArr = []
+        for i in range(0, len(tempPicArr)):
+            tempVPicArr = verticalCut(tempPicArr[i])
+            for j in range(0, len(tempVPicArr)):
+                start = tempVPicArr[i].start
+                end = tempVPicArr[i].end
+                temp = tempPicArr[i][,start:end]
+                temp = np.array(Image.fromarray(temp).resize((mnistSize, mnistSize), Image.ANTIALIAS))
+                singlePicArr.append(temp)  
+        return singlePicArr
+            
+    # 根据y轴分割        
+    def horizontalCut(self, imageArr, padding = 4):
+        w = imageArr.shape()[0]
+        h = imageArr.shape()[1]
+
+        # 矩阵中水平求和
+        horizontalLine = np.sum(imageArr, axis = 1) 
+
+        in_block = False
+        start = 0
+        end = 0
+        horizontalArr = []
+        for i in range(0, h):
+            if in_block == False and horizontalLine[i] != 0:
+                in_block = True
+                start = i
+            else if in_block == True and (horizontalLine[i] == 0 or i+1 == h):
+                in_block = False
+                end = i
+                start = start-padding if start-padding >= 0 else start = 0
+                end = end+padding if end+padding < h else end = h-1
+                lines = {start:start, end:end}
+                horizontalArr.append(lines)
+        return horizontalArr
+
+    # 根据x轴分割
+    def verticalCut(self, imageArr, padding = 4):
+        w = imageArr.shape()[0]
+        h = imageArr.shape()[1]
+
+        # 矩阵中垂直方向求和
+        verticalArr = np.sum(imageArr, axis = 0)
+
+        in_block = False
+        start = 0
+        end = 0
+        verticalArr = []
+        for i in range(0, w):
+            if in_block == False and verticalArr[i] != 0:
+                in_block = True
+                start = i
+            else if in_block == True and (verticalArr[i] == 0 or i+1 == w):
+                in_block = False
+                end = i
+                start = start-padding if start-padding >= 0 else start = 0
+                end = end+padding if end+padding < w else end = w-1
+                lines = {start:start, end:end}
+                verticalArr.append(lines)
+        return verticalArr
 
     def sortIntersections(self, intersections):
         intersections.sort()

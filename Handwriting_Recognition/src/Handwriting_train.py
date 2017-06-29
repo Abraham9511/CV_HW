@@ -1,7 +1,23 @@
 #coding=utf-8
 
 import tensorflow as tf
+import os
 from tensorflow.examples.tutorials.mnist import input_data
+
+# 保存模型到./models/deep_nn下
+def save_model(sess, modelDir='./models', modelName='deep_nn', step):
+    assert isinstance(sess, tf.Session)
+    saver = tf.train.Saver()
+    if not os.path.exists(modelDir):
+        os.mkdir(modelDir)
+    saver.save(sess, os.path.join(modelDir, modelName), global_step = step)
+
+# 尚未写完
+def restore_model(sess, modelDir='./models'):
+    modelFile = tf.train.latest_checkpoint(modelDir)
+    saver = tf.train.Saver()
+    saver.restore(sess, modelFile)
+
 
 def weight_variable(shape):
 	initial = tf.truncated_normal(shape, stddev=0.1)
@@ -24,7 +40,7 @@ def deepnn(x):
 	# 第一层卷积网络，将灰度图映射到32个特征
 	W_conv1 = weight_variable([5,5,1,32])
 	b_conv1 = bias_variable([32])
-	h_conv1 - tf.nn.relu(conv2d(x_image, w_conv1) + b_conv1)
+	h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)
 	
 	# 第一次max_pool降到14x14
 	h_pool1 = max_pool_2x2(h_conv1)
@@ -89,7 +105,7 @@ def main(_):
 			train_step.run(feed_dict={x:batch[0], y_:batch[1], keep_prob:0.5})
 		
 		print('test accuracy %g' % accuracy.eval(feed_dict={
-			x: mnist.test.images, y_: minist.test.labels, keep_prob: 1.0
+			x: mnist.test.images, y_: mnist.test.labels, keep_prob: 1.0
 			}))
 
 

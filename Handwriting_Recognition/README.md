@@ -45,6 +45,8 @@
 
 5. 报告
 
+需要写多张测试的纸张，很多数字
+
 ??
 cross-entropy
 
@@ -53,3 +55,7 @@ cross-entropy between the target and the softmax activation function applied to 
 
 One should generally initialize weights with a small amount of noise for symmetry breaking, and to prevent 0 gradients
 
+
+Handwriting_train 提供训练模型和使用模型做预测
+Handwriting_input 提供预处理所有测试图片为单个28x28的独立字符
+Handwriting_eval 预测
