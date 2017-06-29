@@ -35,6 +35,7 @@ class mImage:
                 if edgePhotoArr[i][j] == 1:
                     edgePhotoArr[i][j] = 1
         """
+        self.edgePhotoArr = edgePhotoArr
         return edgePhotoArr
 
     def hough(self):
@@ -50,15 +51,14 @@ class mImage:
                         p = int(i* cos(ii/np.pi) + j * sin(ii/np.pi))
                         if p < h and p >= 0:
                             hough[ii][p] += 1
-
         return hough
 
     def getLineEquation(self):
-        temp = list(hough())
+        hough = hough()
         w = hough.shape[0]
         h = hough.shape[1]
-        size = hough.shape[0] * hough.shape[1]
-        temp = np.reshape((1, size))
+        size = w*h
+        temp = hough.reshape((1, size))
         index = np.argsort(temp)
         top4 = [-1,-1,-1,-1]
         for i in range(size):
@@ -80,7 +80,8 @@ class mImage:
             foruLine.push(coor)
         return fourLine
 
-    def getIntersections(self, fourLine, kthreshold):
+    def getIntersections(self, kthreshold = 0.5):
+        fourLine = getLineEquation()
         intersections = []
         for i in range(4):
             for j in range(i+1, 4):
@@ -99,12 +100,16 @@ class mImage:
                     y = (b1*k2-b2*k1)/(k2-k1)
                 intersections.push({x:x, y:y})
 
+        print('intersectoins')
         print(intersections)
         sortIntersections(intersections)
+        print('after sorted, intersections')
         print(intersections)
         return intersections
 
     def correctA4(self, intersections):
+        intersections = getIntersections(0.5)
+
         H = squareToQuadrilateral(intersections)
         print(H)
 
@@ -121,7 +126,8 @@ class mImage:
         d34 = dotDistance(np.array([x3, y3]), np.array([x4,y4]))
         d14 = dotDistance(np.array([x1, y1]), np.array([x4,y4]))
         d23 = dotDistance(np.array([x3, y3]), np.array([x2,y2]))
-        
+
+        # 寻找width和height,取得比较长的
         width = d12 > d34 ? d12 : d34
         height = d14 > d23 ? d14 : d23
 
@@ -130,7 +136,7 @@ class mImage:
         else:
             height = width/210*297
 
-        result = np.zeros((self.width, self.height, 3))
+        result = np.zeros((self.width, self.height))
         for x in range(self.width):
             for y in range(self.height):
                 _x = x / width
@@ -139,31 +145,11 @@ class mImage:
                 tx = (H[0,0] * _x + H[1,0] * _y + H[2,0]) /denominator
                 ty = (H[0,1] * _x + H[1,1] * _y + H[2,1]) /denominator
                 if tx >= 0 and tx < self.width and ty >= 0 and ty < self.height:
-                    result[x,y,0] = self.originPhotoArr[tx,ty,0]
-                    result[x,y,1] = self.originPhotoArr[tx,ty,1]
-                    result[x,y,2] = self.originPhotoArr[tx,ty,2]
+                    result[x,y] = self.edgePhotoArr[tx,ty]
         return result
 
-
-    def train():
-        self.classifiers = []
-        # load 10 catagories data, 0-9，此处需要读如数据，然后将label上面的
-
-        for i in range(10):
-            self.classifiers.append(adaBoostTrainDS(dataArr, classLabels[i]))
-
-    def predict(dataArr):
-        classifiers = self.classifiers.copy()
-        retArray = np.array(np.zeros(dataArr.shape[0],1))
-        m = np.shape(np.mat(dataArr))[0]
-        for i in range(m):
-            for j in range(10):
-                result = adaClassify(dataArr)
-                if result[0][0] == 1:
-                    retArray[i][0] = j
-                    break
-        return retArray
-
+    # 求变换矩阵
+    # ??原理暂时不懂
     def squareToQuadrilateral(self, intersections):
         x1 = intersections[0].x
         y1 = intersections[0].y
@@ -177,9 +163,9 @@ class mImage:
         dx3 = x1 - x2 + x3 - x4
         dy3 = y1 - y2 + y3 - y4
 
-        if (dx3 == 0.0 && dy3 == 0.0) 
+        if (dx3 == 0.0 && dy3 == 0.0)
             result = np.array([[x2-x1, y2-y1, 0], [x3-x2, y3-y2, 0], [x1, y1, 1]])
-        else 
+        else
             dx1 = x2-x3
             dy1 = y2-y3
             dx2 = x4-x3
@@ -191,12 +177,12 @@ class mImage:
         return result
 
     # 分割图片的数字成一个个数字
-    def cutPicInSiglePic(self, imageArr):
+    def cutPicSinglePic(self, imageArr):
         w = imageArr.shape()[0]
         h = imageArr.shape()[1]
         horizontalArr = horizontalCut(imageArr)
-        
-        tempHPicArr = [] 
+
+        tempHPicArr = []
         for i in range(0, len(horizontalArr)):
             start = horizontalArr[i].start
             end = horizontalArr[i].end
@@ -211,16 +197,16 @@ class mImage:
                 end = tempVPicArr[i].end
                 temp = tempPicArr[i][,start:end]
                 temp = np.array(Image.fromarray(temp).resize((mnistSize, mnistSize), Image.ANTIALIAS))
-                singlePicArr.append(temp)  
+                singlePicArr.append(temp)
         return singlePicArr
-            
-    # 根据y轴分割        
+
+    # 根据y轴分割
     def horizontalCut(self, imageArr, padding = 4):
         w = imageArr.shape()[0]
         h = imageArr.shape()[1]
 
         # 矩阵中水平求和
-        horizontalLine = np.sum(imageArr, axis = 1) 
+        horizontalLine = np.sum(imageArr, axis = 1)
 
         in_block = False
         start = 0
@@ -264,11 +250,16 @@ class mImage:
                 verticalArr.append(lines)
         return verticalArr
 
+    # 逆时针，点的顺序有关系，对于变换的时候
     def sortIntersections(self, intersections):
         intersections.sort()
-        temp = intersections[0]
-        intersections[0] = intersections[1]
-        intersections[1] = temp
+        result = []
+        result.append(intersections[0])
+        result.append(intersections[2])
+        result.append(intersections[3])
+        result.append(intersections[4])
+        intersections = result
+
 
     def dotDistance(self, coords1, coords2):
         return np.sqrt(np.sum((coords1-coords2)**2))

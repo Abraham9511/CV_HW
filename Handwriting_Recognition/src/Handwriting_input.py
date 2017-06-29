@@ -15,23 +15,25 @@ def getImageFiles():
             rList.append(eachFile)
     return rList
 
-def preprocessAImage(image):
-    image = mImage(test_data,imageName)
+def preprocessAImage(imageName):
+    image = mImage(testDir,imageName)
     image.blur()
     # edge_detection
     # hough
     # getLineEquation
     cropImage = image.correctA4()
+    return cropImage
+
+def getSingleCharacter(cropImage):
+    characters = cutPicInSinglePic(cropImage)
+    return characters
 
 
 
 
-    
 
 
 
 
-#if __name__ == '__main__':
-#    main()
 
-    
+
